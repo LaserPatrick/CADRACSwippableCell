@@ -10,7 +10,7 @@
 
 #import "UIColor+CADRACSwippableCellAdditions.h"
 #import "UIView+CADRACSwippableCellAdditions.h"
-#import <ReactiveObjC.h>
+#import <ReactiveCocoa.h>
 
 @interface CADRACSwippableCell () <UIGestureRecognizerDelegate>{
     BOOL requiresSnapshotUpdate;
