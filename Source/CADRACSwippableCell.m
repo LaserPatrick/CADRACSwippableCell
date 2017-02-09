@@ -79,7 +79,7 @@
     
     [beganOrChangedSignal subscribeNext:^(id x)
      {
-         [self hideRevealViewOfAnyVisibleCell];
+         [weakSelf hideRevealViewOfAnyVisibleCell];
      }];
     
     [[endedOrCancelledSignal filter:^BOOL(UIPanGestureRecognizer *gestureRecognizer) {
