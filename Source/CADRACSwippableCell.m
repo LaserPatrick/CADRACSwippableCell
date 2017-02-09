@@ -10,11 +10,10 @@
 
 #import "UIColor+CADRACSwippableCellAdditions.h"
 #import "UIView+CADRACSwippableCellAdditions.h"
-
-@import ReactiveObjC;
+#import <ReactiveObjC.h>
 
 @interface CADRACSwippableCell () <UIGestureRecognizerDelegate>{
-    BOOL canSnapshottingView;
+    BOOL requiresSnapshotUpdate;
 }
 
 
@@ -52,7 +51,7 @@
 - (void)setupView
 {
     self.revealViewSignal = [RACSubject subject];
-    canSnapshottingView = false;
+    
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:nil];
     panGesture.delegate = self;
@@ -101,7 +100,6 @@
         weakSelf.contentSnapshotView = nil;
         
         [weakSelf.revealView removeFromSuperview];
-        weakSelf.revealView = nil;
     }];
     
     [[[self rac_signalForSelector:@selector(updateConstraints)] filter:^BOOL(id value) {
@@ -117,15 +115,25 @@
     [self addGestureRecognizer:panGesture];
 }
 
-- (void)layoutSubviews
+-(void)setRevealView:(UIView *)revealView
 {
-    [super layoutSubviews];
-    canSnapshottingView = true;
+    _revealView = revealView;
+    [RACObserve(self.revealView, bounds) subscribeNext:^(id x) {
+        self.revealView.frame = (CGRect)
+        {
+            .origin = CGPointMake(self.allowedDirection == CADRACSwippableCellAllowedDirectionRight ? 0.0f : CGRectGetWidth(self.frame) - CGRectGetWidth(self.revealView.frame), 0.0f),
+            .size = self.revealView.frame.size
+        };
+    }];
     
-    self.revealView.frame = (CGRect){
-        .origin = CGPointMake(self.allowedDirection == CADRACSwippableCellAllowedDirectionRight ? 0.0f : CGRectGetWidth(self.frame) - CGRectGetWidth(self.revealView.frame), 0.0f),
-        .size = self.revealView.frame.size
-    };
+}
+-(void)didAddSubview:(UIView *)subview
+{
+    [super didAddSubview:subview];
+    
+     requiresSnapshotUpdate = YES;
+    _contentSnapshotView = [self contentSnapshotView];
+     requiresSnapshotUpdate = NO;
 }
 
 #pragma mark - Public
@@ -268,7 +276,7 @@
 
 - (UIView *)contentSnapshotView
 {
-    if (!_contentSnapshotView && canSnapshottingView)
+    if (!_contentSnapshotView || requiresSnapshotUpdate)
     {
         _contentSnapshotView = [self snapshotViewAfterScreenUpdates:NO];
         _contentSnapshotView.backgroundColor = [UIColor firstNonClearBackgroundColorInHierarchyForView:self];
