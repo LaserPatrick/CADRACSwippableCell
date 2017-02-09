@@ -77,6 +77,11 @@
         [panGesture setTranslation:CGPointZero inView:weakSelf];
     }];
     
+    [beganOrChangedSignal subscribeNext:^(id x)
+     {
+         [self hideRevealViewOfAnyVisibleCell];
+     }];
+    
     [[endedOrCancelledSignal filter:^BOOL(UIPanGestureRecognizer *gestureRecognizer) {
         return fabs(CGRectGetMinX(weakSelf.contentSnapshotView.frame)) >= CGRectGetWidth(weakSelf.revealView.frame)/2 ||
         [weakSelf shouldShowRevealViewForVelocity:[gestureRecognizer velocityInView:weakSelf]];
@@ -246,6 +251,16 @@
     }
     
     return centerPoint;
+}
+
+- (void)hideRevealViewOfAnyVisibleCell
+{
+    [[self.superCollectionView visibleCells] enumerateObjectsUsingBlock:^(CADRACSwippableCell *otherCell, NSUInteger idx, BOOL *stop) {
+        if (otherCell != self)
+        {
+            [otherCell hideRevealViewAnimated:YES];
+        }
+    }];
 }
 
 #pragma mark - UIGestureRecognizer Delegate
