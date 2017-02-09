@@ -18,11 +18,12 @@
 		8CF9828318FECB46001A3FAB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF9828218FECB46001A3FAB /* Foundation.framework */; };
 		8CF9828518FECB46001A3FAB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF9828418FECB46001A3FAB /* CoreGraphics.framework */; };
 		8CF9828718FECB46001A3FAB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CF9828618FECB46001A3FAB /* UIKit.framework */; };
-		A62E21EEB8EC854E956D4D77 /* Pods_CADRACSwippableCell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E79DDC9B12765436287CEA12 /* Pods_CADRACSwippableCell.framework */; };
+		FE65A84154C5D718DF0C9239 /* libPods-CADRACSwippableCell.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 405A0813A657F8B09D986E86 /* libPods-CADRACSwippableCell.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		10321B3F9EB457305135B73B /* Pods-CADRACSwippableCell.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CADRACSwippableCell.release.xcconfig"; path = "Pods/Target Support Files/Pods-CADRACSwippableCell/Pods-CADRACSwippableCell.release.xcconfig"; sourceTree = "<group>"; };
+		405A0813A657F8B09D986E86 /* libPods-CADRACSwippableCell.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-CADRACSwippableCell.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C4128271900153F00279CF9 /* CADAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CADAppDelegate.h; path = CADRACSwippableCell/CADAppDelegate.h; sourceTree = SOURCE_ROOT; };
 		8C4128281900153F00279CF9 /* CADAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CADAppDelegate.m; path = CADRACSwippableCell/CADAppDelegate.m; sourceTree = SOURCE_ROOT; };
 		8C41282A1900155000279CF9 /* CADViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CADViewController.h; path = CADRACSwippableCell/CADViewController.h; sourceTree = SOURCE_ROOT; };
@@ -45,7 +46,6 @@
 		8CF982A518FECB46001A3FAB /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		8CF982A718FECB46001A3FAB /* CADRACSwippableCellTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CADRACSwippableCellTests.m; sourceTree = "<group>"; };
 		BDAADBD25910721E1889A950 /* Pods-CADRACSwippableCell.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CADRACSwippableCell.debug.xcconfig"; path = "Pods/Target Support Files/Pods-CADRACSwippableCell/Pods-CADRACSwippableCell.debug.xcconfig"; sourceTree = "<group>"; };
-		E79DDC9B12765436287CEA12 /* Pods_CADRACSwippableCell.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CADRACSwippableCell.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +56,7 @@
 				8CF9828518FECB46001A3FAB /* CoreGraphics.framework in Frameworks */,
 				8CF9828718FECB46001A3FAB /* UIKit.framework in Frameworks */,
 				8CF9828318FECB46001A3FAB /* Foundation.framework in Frameworks */,
-				A62E21EEB8EC854E956D4D77 /* Pods_CADRACSwippableCell.framework in Frameworks */,
+				FE65A84154C5D718DF0C9239 /* libPods-CADRACSwippableCell.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +89,7 @@
 				8CF9828418FECB46001A3FAB /* CoreGraphics.framework */,
 				8CF9828618FECB46001A3FAB /* UIKit.framework */,
 				8CF9829B18FECB46001A3FAB /* XCTest.framework */,
-				E79DDC9B12765436287CEA12 /* Pods_CADRACSwippableCell.framework */,
+				405A0813A657F8B09D986E86 /* libPods-CADRACSwippableCell.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -185,7 +185,8 @@
 				ORGANIZATIONNAME = "Crows And Dogs";
 				TargetAttributes = {
 					8CF9827E18FECB46001A3FAB = {
-						ProvisioningStyle = Manual;
+						DevelopmentTeam = E49EDX43G4;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -378,7 +379,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E49EDX43G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CADRACSwippableCell/CADRACSwippableCell-Prefix.pch";
 				INFOPLIST_FILE = "CADRACSwippableCell/CADRACSwippableCell-Info.plist";
@@ -394,7 +396,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = E49EDX43G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CADRACSwippableCell/CADRACSwippableCell-Prefix.pch";
 				INFOPLIST_FILE = "CADRACSwippableCell/CADRACSwippableCell-Info.plist";

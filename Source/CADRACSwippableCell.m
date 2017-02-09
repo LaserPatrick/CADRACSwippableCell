@@ -105,6 +105,7 @@
         weakSelf.contentSnapshotView = nil;
         
         [weakSelf.revealView removeFromSuperview];
+        [weakSelf hideRevealViewOfAnyVisibleCell]; //don't know why it is not animating
     }];
     
     [[[self rac_signalForSelector:@selector(updateConstraints)] filter:^BOOL(id value) {
@@ -255,8 +256,10 @@
 
 - (void)hideRevealViewOfAnyVisibleCell
 {
-    [[self.superCollectionView visibleCells] enumerateObjectsUsingBlock:^(CADRACSwippableCell *otherCell, NSUInteger idx, BOOL *stop) {
-        if (otherCell != self)
+    __block CADRACSwippableCell *weakSelf = self;
+    [[self.superCollectionView visibleCells] enumerateObjectsUsingBlock:^(CADRACSwippableCell *otherCell, NSUInteger idx, BOOL *stop)
+    {
+        if (otherCell != weakSelf && !(CGPointEqualToPoint(otherCell.contentSnapshotView.center, otherCell.contentView.center)))
         {
             [otherCell hideRevealViewAnimated:YES];
         }
