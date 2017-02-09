@@ -15,7 +15,7 @@
 	UIView *superview = view;
 	UIColor *color = view.backgroundColor;
     
-	while (superview != nil && [color isEqualToColor:[UIColor clearColor]])
+	while (superview != nil && (!color || [color isEqualToColor:[UIColor clearColor]]))
     {
 		superview = [superview superview];
         color = superview.backgroundColor;

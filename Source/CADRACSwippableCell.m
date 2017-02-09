@@ -10,11 +10,10 @@
 
 #import "UIColor+CADRACSwippableCellAdditions.h"
 #import "UIView+CADRACSwippableCellAdditions.h"
-
-@import ReactiveObjC;
+#import <ReactiveCocoa.h>
 
 @interface CADRACSwippableCell () <UIGestureRecognizerDelegate>{
-    BOOL canSnapshottingView;
+    BOOL requiresSnapshotUpdate;
 }
 
 
@@ -52,7 +51,7 @@
 - (void)setupView
 {
     self.revealViewSignal = [RACSubject subject];
-    canSnapshottingView = false;
+    
     
     UIPanGestureRecognizer *panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:nil];
     panGesture.delegate = self;
@@ -78,6 +77,11 @@
         [panGesture setTranslation:CGPointZero inView:weakSelf];
     }];
     
+    [beganOrChangedSignal subscribeNext:^(id x)
+     {
+         [weakSelf hideRevealViewOfAnyVisibleCell];
+     }];
+    
     [[endedOrCancelledSignal filter:^BOOL(UIPanGestureRecognizer *gestureRecognizer) {
         return fabs(CGRectGetMinX(weakSelf.contentSnapshotView.frame)) >= CGRectGetWidth(weakSelf.revealView.frame)/2 ||
         [weakSelf shouldShowRevealViewForVelocity:[gestureRecognizer velocityInView:weakSelf]];
@@ -101,7 +105,7 @@
         weakSelf.contentSnapshotView = nil;
         
         [weakSelf.revealView removeFromSuperview];
-        weakSelf.revealView = nil;
+        [weakSelf hideRevealViewOfAnyVisibleCell]; //don't know why it is not animating
     }];
     
     [[[self rac_signalForSelector:@selector(updateConstraints)] filter:^BOOL(id value) {
@@ -117,15 +121,25 @@
     [self addGestureRecognizer:panGesture];
 }
 
-- (void)layoutSubviews
+-(void)setRevealView:(UIView *)revealView
 {
-    [super layoutSubviews];
-    canSnapshottingView = true;
+    _revealView = revealView;
+    [RACObserve(self.revealView, bounds) subscribeNext:^(id x) {
+        self.revealView.frame = (CGRect)
+        {
+            .origin = CGPointMake(self.allowedDirection == CADRACSwippableCellAllowedDirectionRight ? 0.0f : CGRectGetWidth(self.frame) - CGRectGetWidth(self.revealView.frame), 0.0f),
+            .size = self.revealView.frame.size
+        };
+    }];
     
-    self.revealView.frame = (CGRect){
-        .origin = CGPointMake(self.allowedDirection == CADRACSwippableCellAllowedDirectionRight ? 0.0f : CGRectGetWidth(self.frame) - CGRectGetWidth(self.revealView.frame), 0.0f),
-        .size = self.revealView.frame.size
-    };
+}
+-(void)didAddSubview:(UIView *)subview
+{
+    [super didAddSubview:subview];
+    
+     requiresSnapshotUpdate = YES;
+    _contentSnapshotView = [self contentSnapshotView];
+     requiresSnapshotUpdate = NO;
 }
 
 #pragma mark - Public
@@ -240,6 +254,18 @@
     return centerPoint;
 }
 
+- (void)hideRevealViewOfAnyVisibleCell
+{
+    __block CADRACSwippableCell *weakSelf = self;
+    [[self.superCollectionView visibleCells] enumerateObjectsUsingBlock:^(CADRACSwippableCell *otherCell, NSUInteger idx, BOOL *stop)
+    {
+        if (otherCell != weakSelf && !(CGPointEqualToPoint(otherCell.contentSnapshotView.center, otherCell.contentView.center)))
+        {
+            [otherCell hideRevealViewAnimated:YES];
+        }
+    }];
+}
+
 #pragma mark - UIGestureRecognizer Delegate
 
 // Would be awesome to do this with RAC
@@ -268,7 +294,7 @@
 
 - (UIView *)contentSnapshotView
 {
-    if (!_contentSnapshotView && canSnapshottingView)
+    if (!_contentSnapshotView || requiresSnapshotUpdate)
     {
         _contentSnapshotView = [self snapshotViewAfterScreenUpdates:NO];
         _contentSnapshotView.backgroundColor = [UIColor firstNonClearBackgroundColorInHierarchyForView:self];
